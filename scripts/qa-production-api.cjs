@@ -5,6 +5,7 @@ const normalizeConnectionString = require('./connection-string.cjs');
 
 const baseUrl = String(process.env.VARSITYONE_QA_BASE_URL || 'https://varsityone.vercel.app').replace(/\/$/, '');
 const connectionString = normalizeConnectionString(process.env.DATABASE_URL);
+const qaAccounts = JSON.parse(process.env.VARSITYONE_QA_DEMO_CREDENTIALS || '[]');
 if (!connectionString) throw new Error('DATABASE_URL is required to create and clean a short-lived QA session.');
 if (new URL(baseUrl).protocol !== 'https:') throw new Error('Production endpoint QA requires an HTTPS URL.');
 const pool = new Pool({ connectionString, ssl: { rejectUnauthorized: true }, max: 1, connectionTimeoutMillis: 10000, application_name: 'varsityone-production-api-qa' });
@@ -73,8 +74,10 @@ async function createUser(admin, role, departmentId, programId) {
 async function main() {
   const db = await pool.connect();
   try {
-    const owner = await db.query("SELECT id FROM users WHERE lower(email)='odinigwechu137@gmail.com' AND role='super_admin' AND status='active'");
-    assert.equal(owner.rowCount, 1, 'active production super administrator must exist');
+    const qaSuperAdmin = qaAccounts.find(account => account.role === 'super_admin');
+    assert.ok(qaSuperAdmin?.email, 'provide the prepared super-admin role account for production QA');
+    const owner = await db.query('SELECT id FROM users WHERE lower(email)=lower($1) AND role=$2 AND status=$3', [qaSuperAdmin.email, 'super_admin', 'active']);
+    assert.equal(owner.rowCount, 1, 'configured QA super administrator must be active in the target database');
     ownerId = Number(owner.rows[0].id);
     const sessionToken = crypto.randomBytes(32).toString('base64url');
     qaSessionHash = crypto.createHash('sha256').update(sessionToken).digest('hex');
@@ -111,9 +114,8 @@ async function main() {
       await request(null, '/notifications', { expected: 401 });
     });
     await check('preloaded test-role account access', async () => {
-      const accounts = JSON.parse(process.env.VARSITYONE_QA_DEMO_CREDENTIALS || '[]');
-      assert.ok(accounts.length >= 4, 'provide the prepared role-account credentials for production login verification');
-      for (const account of accounts) {
+      assert.ok(qaAccounts.length >= 4, 'provide the prepared role-account credentials for production login verification');
+      for (const account of qaAccounts) {
         const token = await login(account.email, account.password, account.role);
         const current = await request(token, '/me');
         assert.equal(current.data.user.role, account.role);
