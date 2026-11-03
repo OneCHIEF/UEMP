@@ -1,0 +1,11 @@
+data/
+node_modules/
+dist/
+*.log
+.env*
+!.env.example
+*.tsbuildinfo
+VarsityONE-Test-Access-Credentials.md
+
+.vercel
+.env*

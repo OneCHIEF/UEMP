@@ -1,0 +1,42 @@
+import { createTheme } from '@mui/material/styles';
+
+export const theme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: { main: '#125b54', dark: '#0c393b', light: '#387b70' },
+    secondary: { main: '#d49a55', dark: '#a86c30', light: '#f7ead8' },
+    background: { default: '#f4f6f2', paper: '#ffffff' },
+    text: { primary: '#142b30', secondary: '#65777a' },
+    success: { main: '#328469' },
+    warning: { main: '#b77b32' },
+    error: { main: '#bc5d56' },
+    divider: '#e4eae4',
+  },
+  typography: {
+    htmlFontSize: 16,
+    fontSize: 15,
+    fontFamily: '"Plus Jakarta Sans Variable", "Segoe UI", sans-serif',
+    h1: { fontFamily: '"Manrope Variable", "Segoe UI", sans-serif', fontWeight: 750, letterSpacing: '-1.2px', fontSize: '2.1rem', lineHeight: 1.16 },
+    h2: { fontFamily: '"Manrope Variable", "Segoe UI", sans-serif', fontWeight: 700, letterSpacing: '-0.5px', fontSize: '1.75rem', lineHeight: 1.2 },
+    h3: { fontFamily: '"Manrope Variable", "Segoe UI", sans-serif', fontWeight: 700, fontSize: '1.4rem', lineHeight: 1.3 },
+    h4: { fontFamily: '"Manrope Variable", "Segoe UI", sans-serif', fontWeight: 700, fontSize: '1.2rem', lineHeight: 1.35 },
+    h5: { fontFamily: '"Manrope Variable", "Segoe UI", sans-serif', fontWeight: 700, fontSize: '1.05rem', lineHeight: 1.4 },
+    h6: { fontFamily: '"Manrope Variable", "Segoe UI", sans-serif', fontWeight: 700, fontSize: '0.95rem', lineHeight: 1.45 },
+    body1: { fontSize: '0.9375rem', lineHeight: 1.55 },
+    body2: { fontSize: '0.875rem', lineHeight: 1.55 },
+    subtitle1: { fontSize: '0.9375rem', lineHeight: 1.5, fontWeight: 600 },
+    subtitle2: { fontSize: '0.875rem', lineHeight: 1.5, fontWeight: 700 },
+    caption: { fontSize: '0.75rem', lineHeight: 1.5 },
+    overline: { fontSize: '0.6875rem', lineHeight: 1.5, fontWeight: 800, letterSpacing: '0.09em' },
+    button: { fontSize: '0.8125rem', textTransform: 'none', fontWeight: 700, lineHeight: 1.35 },
+  },
+  shape: { borderRadius: 10 },
+  components: {
+    MuiPaper: { styleOverrides: { root: { backgroundImage: 'none' } } },
+    MuiButton: { defaultProps: { disableElevation: true }, styleOverrides: { root: { borderRadius: 11, paddingInline: 17, minHeight: 42, fontWeight: 700 } } },
+    MuiOutlinedInput: { styleOverrides: { root: { borderRadius: 11 } } },
+    MuiTableCell: { styleOverrides: { head: { color: '#65777a', background: '#f7f9f6', fontWeight: 700, fontSize: 13 }, root: { borderColor: '#e8ede8', fontSize: 14 } } },
+    MuiDialog: { styleOverrides: { paper: { borderRadius: 20 } } },
+    MuiTooltip: { styleOverrides: { tooltip: { fontSize: 12, lineHeight: 1.45, padding: '8px 11px', borderRadius: 9 } } },
+  },
+});

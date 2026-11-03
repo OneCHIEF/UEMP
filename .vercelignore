@@ -1,0 +1,4 @@
+.vercel
+.env*
+VarsityONE-Test-Access-Credentials.md
+.tmp-reset-demo-passwords.cjs

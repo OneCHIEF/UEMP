@@ -1,0 +1,10 @@
+services:
+  uemp:
+    build: .
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL to your Neon PostgreSQL connection string}
+    ports:
+      - "127.0.0.1:3000:3000"

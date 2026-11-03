@@ -1,0 +1,71 @@
+name: VarsityONE CI/CD
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: varsityone-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Type check and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Type check and build
+        run: npm run build
+
+  deploy:
+    name: Deploy production to Vercel
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    env:
+      VERCEL_ORG_ID: team_qdJyly3YZC0hW9mN2v0NyfYT
+      VERCEL_PROJECT_ID: prj_88ro1ysMJ1vR5T42bnJ52nO8aMvV
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Require Vercel deployment credential
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::error::Add VERCEL_TOKEN as a GitHub Actions repository secret."
+            exit 1
+          fi
+      - name: Link checkout to the Vercel project
+        run: |
+          mkdir -p .vercel
+          printf '{"orgId":"%s","projectId":"%s"}\n' "$VERCEL_ORG_ID" "$VERCEL_PROJECT_ID" > .vercel/project.json
+      - name: Pull production project settings
+        run: npx --yes vercel@58.4.4 pull --yes --environment=production --token="$VERCEL_TOKEN"
+      - name: Build Vercel production output
+        run: npx --yes vercel@58.4.4 build --prod --token="$VERCEL_TOKEN"
+      - name: Deploy production output
+        run: npx --yes vercel@58.4.4 deploy --prebuilt --prod --token="$VERCEL_TOKEN"

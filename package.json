@@ -1,0 +1,40 @@
+{
+  "name": "varsityone-university-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VarsityONE academic management platform",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js",
+    "dev": "vite --host 0.0.0.0",
+    "dev:api": "node --env-file-if-exists=.env --watch server.js",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "db:migrate": "node --env-file-if-exists=.env scripts/migrate.cjs",
+    "db:seed-institution": "node --env-file-if-exists=.env scripts/seed-institution-data.cjs",
+    "db:create-admin": "node --env-file-if-exists=.env scripts/create-admin.cjs",
+    "qa:production-api": "node scripts/qa-production-api.cjs"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
+    "@mui/icons-material": "^7.3.2",
+    "@mui/material": "^7.3.2",
+    "pg": "^8.23.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^5.0.2",
+    "concurrently": "^9.2.1",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.4"
+  }
+}
